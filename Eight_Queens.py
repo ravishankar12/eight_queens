@@ -25,7 +25,7 @@ def fitting(chromosome):
             counter += right_diagonal[i] - 1
         diagonal_collisions += counter / (n - abs(i - n + 1))
 
-    return int(maxfitting - (horizontal_collisions + diagonal_collisions))  # 28-(2+3)=23
+    return int(maxfitting - (horizontal_collisions + diagonal_collisions))
 
 
 def fnprobability(chromosome, fitting):
@@ -44,13 +44,13 @@ def rnd_picking(population, probabilities):
     assert False, "Shouldn't get here"
 
 
-def reprod(x, y):  # doing cross_over between two chromosomes
+def reprod(x, y):  # performing crossover between 2 chromosomes
     n = len(x)
     c = random.randint(0, n - 1)
     return x[0:c] + y[c:n]
 
 
-def mutation(x):  # randomly changing the value of a random index of a chromosome
+def mutation(x):  # randomizing the value of an index of a chromosome
     n = len(x)
     c = random.randint(0, n - 1)
     m = random.randint(1, n)
@@ -63,12 +63,11 @@ def genetic_queen(population, fitting):
     new_population = []
     probabilities = [fnprobability(n, fitting) for n in population]
     for i in range(len(population)):
-        x = rnd_picking(population, probabilities)  # best chromosome 1
-        y = rnd_picking(population, probabilities)  # best chromosome 2
-        child = reprod(x, y)  # creating two new chromosomes from the best 2 chromosomes
+        x = rnd_picking(population, probabilities)  # 1st best chromosome
+        y = rnd_picking(population, probabilities)  # 2nd best chromosome
+        child = reprod(x, y)  # producing 2 new chromosomes from the best 2 chromosomes
         if random.random() < mutation_probability:
             child = mutation(child)
-        #print_chrome(child)
         new_population.append(child)
         if fitting(child) == maxfitting: break
     return new_population
@@ -81,16 +80,13 @@ def print_chrome(chrom):
 
 if __name__ == "__main__":
     nq = 8  # say N = 8
-    maxfitting = (nq * (nq - 1)) / 2  # 8*7/2 = 28
+    maxfitting = (nq * (nq - 1)) / 2  # (8*7)/2 = 28
     population = [rnd_chrome(nq) for _ in range(100)]
 
     generation = 1
 
     while not maxfitting in [fitting(chrom) for chrom in population]:
-        #print("=== Generation {} ===".format(generation))
         population = genetic_queen(population, fitting)
-        #print("")
-        #print("Maximum Fitness = {}".format(max([fitting(n) for n in population])))
         generation += 1
     chrom_out = []
     print("Solved in Generation {}!".format(generation - 1))
